@@ -1,3 +1,10 @@
+let img;
+let x = 50;
+let y = 50;
+let rotation = 0;
+let speed = 0;
+let bullets = [];
+
 function setup() {
   createCanvas(1450, 700);
 }
@@ -15,13 +22,6 @@ function hero(x, y, rotation) {
   ellipse(43, 24, 3);
   pop();
 }
-
-let img;
-let x = 50;
-let y = 50;
-let rotation = 0;
-let speed = 0;
-let bullets = [];
 
 function draw() {
   background(150);
