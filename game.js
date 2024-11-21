@@ -58,7 +58,7 @@ function setup() {
 
     // Draw the bullet
     fill(255, 0, 0);
-    ellipse(b.x, b.y, 5, 5);
+    ellipse(b.x, b.y, 5, 2);
 
     // Remove bullets that leave the screen
     if (b.x < 0 || b.x > width || b.y < 0 || b.y > height) {
