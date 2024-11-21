@@ -11,6 +11,8 @@ function setup() {
  translate(x,y);
  rotate(rotation);
  image(img,-50, -50, 100, 100); // Display the image at (50, 50) with a size of 300x200
+ fill(0);
+ ellipse(43,24,3);
  pop();
 
 }
@@ -20,6 +22,7 @@ function setup() {
  let y = 50;
  let rotation = 0;
  let speed = 0;
+ let bullets = [];
 
  function draw() {
    background(150);
@@ -48,8 +51,40 @@ function setup() {
     rotation = rotation + 0.05;
   }
 
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    let b = bullets[i];
+    b.x += b.vx; // Update bullet's x position
+    b.y += b.vy; // Update bullet's y position
+
+    // Draw the bullet
+    fill(255, 0, 0);
+    ellipse(b.x, b.y, 5, 5);
+
+    // Remove bullets that leave the screen
+    if (b.x < 0 || b.x > width || b.y < 0 || b.y > height) {
+      bullets.splice(i, 1); // Remove the bullet
+    }
+  }
+
+}
+
+function mousePressed() {
+  // Calculate the gun position
+  let gunX = x + Math.cos(rotation) * 43 - Math.sin(rotation) * 24;
+  let gunY = y + Math.sin(rotation) * 43 + Math.cos(rotation) * 24;
+
+  // Create a new bullet
+  let bulletSpeed = 10;
+  let bullet = {
+    x: gunX, // Start at the gun's position
+    y: gunY,
+    vx: Math.cos(rotation) * bulletSpeed, // Velocity in x-direction
+    vy: Math.sin(rotation) * bulletSpeed, // Velocity in y-direction
+  };
+  bullets.push(bullet); // Add the bullet to the array
 }
  
+
 
  
   
