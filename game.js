@@ -10,7 +10,7 @@ function setup() {
 }
 
 function preload() {
-  img = loadImage("character.png"); // Ensure the image is uploaded in the editor
+  img = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
 }
 
 function hero(x, y, rotation) {
