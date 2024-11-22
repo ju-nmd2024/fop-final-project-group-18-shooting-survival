@@ -1,4 +1,6 @@
-let img;
+let character;
+let winBackground;
+
 let x = 50;
 let y = 50;
 let rotation = 0;
@@ -14,7 +16,8 @@ function setup() {
 }
 
 function preload() {
-  img = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
+  character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
+  winBackground = loadImage("img/won.png");
 }
 
 function draw() {
@@ -33,7 +36,7 @@ function draw() {
     textSize(20);
     text("Click to Restart", width / 2, height / 2 + 40);
   } else if (gameWon) {
-    background(250, 200, 150);
+    ackground(winBackground);
     textAlign(CENTER, CENTER);
     textSize(40);
     fill(102, 51, 0);
@@ -120,7 +123,7 @@ function hero(x, y, rotation) {
   push();
   translate(x, y);
   rotate(rotation);
-  image(img, -50, -50, 100, 100);
+  image(character, -50, -50, 100, 100);
   fill(0);
   ellipse(43, 24, 3);
   pop();
