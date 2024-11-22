@@ -1,7 +1,7 @@
 let character;
 let winBackground;
 
-let x = 50;
+let x = 150;
 let y = 50;
 let rotation = 0;
 let speed = 0;
