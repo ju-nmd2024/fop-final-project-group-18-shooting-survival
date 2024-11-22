@@ -2,7 +2,7 @@ let character;
 let winBackground;
 
 let x = 150;
-let y = 50;
+let y = 150;
 let rotation = 0;
 let speed = 0;
 let bullets = [];
