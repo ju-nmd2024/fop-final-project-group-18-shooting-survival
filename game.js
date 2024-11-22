@@ -5,7 +5,11 @@ let x = 50;
 let y = 50;
 let rotation = 0;
 let speed = 0;
+
 let bullets = [];
+let npcs = [];
+
+let gridSize = 100;
 
 let gameStarted = false;
 let gameEnded = false;
@@ -13,12 +17,98 @@ let gameWon = false;
 
 function setup() {
   createCanvas(1450, 700);
+  createNPCs();
 }
 
 function preload() {
   character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
   winBackground = loadImage("img/won.png");
   lostBackground = loadImage("img/Lost.jpg");
+}
+
+function drawBackground() {
+  // Ground
+  fill(34, 139, 34);
+  rect(0, 0, width, height);
+}
+
+let mapGrid = [
+  [0, 0, 0, 1, 1, 0, 0],
+  [0, 1, 0, 0, 1, 0, 0],
+  [0, 1, 0, 0, 0, 0, 0],
+  [0, 0, 0, 1, 1, 1, 0],
+  [1, 1, 0, 0, 0, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0],
+];
+
+function drawMap() {
+  for (let y = 0; y < mapGrid.length; y++) {
+    for (let x = 0; x < mapGrid[0].length; x++) {
+      if (mapGrid[y][x] === 0) {
+        fill(200, 200, 200); // 可行走路径
+      } else if (mapGrid[y][x] === 1) {
+        fill(100, 200, 100); // 障碍物
+      }
+      rect(x * gridSize, y * gridSize, gridSize, gridSize);
+    }
+  }
+}
+
+function createNPCs() {
+  for (let i = 0; i < 9; i++) {
+    let npc = {
+      gridX: floor(random(0, mapGrid[0].length)), // 随机生成网格坐标
+      gridY: floor(random(0, mapGrid.length)),
+      size: 40,
+    };
+
+    // 确保 NPC 出生在路径上
+    while (mapGrid[npc.gridY][npc.gridX] !== 0) {
+      npc.gridX = floor(random(0, mapGrid[0].length));
+      npc.gridY = floor(random(0, mapGrid.length));
+    }
+
+    npcs.push(npc);
+  }
+}
+
+function drawNPCs() {
+  for (let npc of npcs) {
+    fill(0, 0, 255);
+    ellipse(
+      npc.gridX * gridSize + gridSize / 2,
+      npc.gridY * gridSize + gridSize / 2,
+      npc.size
+    );
+  }
+}
+
+function moveNPCs() {
+  for (let npc of npcs) {
+    let directions = [
+      { dx: 0, dy: -1 }, // 上
+      { dx: 0, dy: 1 }, // 下
+      { dx: -1, dy: 0 }, // 左
+      { dx: 1, dy: 0 }, // 右
+    ];
+
+    let choice = random(directions); // 随机选择一个方向
+    let newGridX = npc.gridX + choice.dx;
+    let newGridY = npc.gridY + choice.dy;
+
+    // 检查是否越界以及目标位置是否为路径
+    if (
+      newGridX >= 0 &&
+      newGridX < mapGrid[0].length &&
+      newGridY >= 0 &&
+      newGridY < mapGrid.length &&
+      mapGrid[newGridY][newGridX] === 0
+    ) {
+      npc.gridX = newGridX;
+      npc.gridY = newGridY;
+    }
+  }
 }
 
 function draw() {
@@ -45,8 +135,14 @@ function draw() {
     textSize(30);
     text("Click to Restart", width / 2, height / 2 + 40);
   } else {
-    background(150);
+    drawBackground();
+    drawMap(); // 绘制地图
+    drawNPCs(); // 绘制 NPC
     hero(x, y, rotation);
+
+    if (frameCount % 60 === 0) {
+      moveNPCs(); // 每隔 60 帧让 NPC 移动一次
+    }
 
     x = x + Math.cos(rotation) * speed;
     y = y + Math.sin(rotation) * speed;
