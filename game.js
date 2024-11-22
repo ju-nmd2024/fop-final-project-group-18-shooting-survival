@@ -18,6 +18,7 @@ function setup() {
 function preload() {
   character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
   winBackground = loadImage("img/won.png");
+  lostBackground = loadImage("img/Lost.jpg");
 }
 
 function draw() {
@@ -28,7 +29,7 @@ function draw() {
     fill(102, 51, 0);
     text("Start Game", width / 2, height / 2);
   } else if (gameEnded) {
-    background(0, 0, 0);
+    background(lostBackground);
     textAlign(CENTER, CENTER);
     textSize(40);
     fill(255);
@@ -36,7 +37,7 @@ function draw() {
     textSize(20);
     text("Click to Restart", width / 2, height / 2 + 40);
   } else if (gameWon) {
-    ackground(winBackground);
+    background(winBackground);
     textAlign(CENTER, CENTER);
     textSize(40);
     fill(102, 51, 0);
