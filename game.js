@@ -34,13 +34,13 @@ function drawBackground() {
 }
 
 let mapGrid = [
-  [0, 0, 0, 1, 1, 0, 0],
-  [0, 1, 0, 0, 1, 0, 0],
-  [0, 1, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 1, 1, 0],
-  [1, 1, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+  [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0],
+  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
 ];
 
 function drawMap() {
@@ -64,8 +64,8 @@ function createNPCs() {
       size: 40,
     };
 
-     // Ensure NPC spawns on a walkable path
-     while (mapGrid[npc.gridY][npc.gridX] !== 0) {
+    // Ensure NPC spawns on a walkable path
+    while (mapGrid[npc.gridY][npc.gridX] !== 0) {
       npc.gridX = floor(random(0, mapGrid[0].length));
       npc.gridY = floor(random(0, mapGrid.length));
     }
@@ -116,8 +116,6 @@ function moveNPCs() {
     }
   }
 }
-
-
 
 function draw() {
   if (!gameStarted) {
@@ -205,7 +203,6 @@ function draw() {
     }
   }
 }
-
 
 function mousePressed() {
   if (!gameStarted) {
