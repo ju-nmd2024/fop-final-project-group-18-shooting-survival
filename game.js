@@ -24,6 +24,7 @@ function preload() {
   character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
   winBackground = loadImage("img/won.png");
   lostBackground = loadImage("img/Lost.jpg");
+  enemy = loadImage("img/enemy1.png");
 }
 
 function drawBackground() {
@@ -58,13 +59,13 @@ function drawMap() {
 function createNPCs() {
   for (let i = 0; i < 9; i++) {
     let npc = {
-      gridX: floor(random(0, mapGrid[0].length)), // 随机生成网格坐标
+      gridX: floor(random(0, mapGrid[0].length)), // Random grid position
       gridY: floor(random(0, mapGrid.length)),
       size: 40,
     };
 
-    // 确保 NPC 出生在路径上
-    while (mapGrid[npc.gridY][npc.gridX] !== 0) {
+     // Ensure NPC spawns on a walkable path
+     while (mapGrid[npc.gridY][npc.gridX] !== 0) {
       npc.gridX = floor(random(0, mapGrid[0].length));
       npc.gridY = floor(random(0, mapGrid.length));
     }
@@ -75,10 +76,11 @@ function createNPCs() {
 
 function drawNPCs() {
   for (let npc of npcs) {
-    fill(0, 0, 255);
-    ellipse(
-      npc.gridX * gridSize + gridSize / 2,
-      npc.gridY * gridSize + gridSize / 2,
+    image(
+      enemy,
+      npc.gridX * gridSize + gridSize / 2 - npc.size / 2,
+      npc.gridY * gridSize + gridSize / 2 - npc.size / 2,
+      npc.size,
       npc.size
     );
   }
@@ -86,27 +88,35 @@ function drawNPCs() {
 
 function moveNPCs() {
   for (let npc of npcs) {
-    let directions = [
-      { dx: 0, dy: -1 }, // 上
-      { dx: 0, dy: 1 }, // 下
-      { dx: -1, dy: 0 }, // 左
-      { dx: 1, dy: 0 }, // 右
-    ];
+    let npcX = npc.gridX * gridSize + gridSize / 2;
+    let npcY = npc.gridY * gridSize + gridSize / 2;
 
-    let choice = random(directions); // 随机选择一个方向
-    let newGridX = npc.gridX + choice.dx;
-    let newGridY = npc.gridY + choice.dy;
+    let targetX = x;
+    let targetY = y;
 
-    // 检查是否越界以及目标位置是否为路径
-    if (
-      newGridX >= 0 &&
-      newGridX < mapGrid[0].length &&
-      newGridY >= 0 &&
-      newGridY < mapGrid.length &&
-      mapGrid[newGridY][newGridX] === 0
-    ) {
-      npc.gridX = newGridX;
-      npc.gridY = newGridY;
+    let dx = targetX - npcX;
+    let dy = targetY - npcY;
+    let distance = sqrt(dx * dx + dy * dy);
+
+    if (distance > 1) {
+      // Normalize direction
+      let stepX = dx / distance;
+      let stepY = dy / distance;
+
+      let newGridX = floor((npcX + stepX * 2) / gridSize);
+      let newGridY = floor((npcY + stepY * 2) / gridSize);
+
+      // Check if new position is within bounds and walkable
+      if (
+        newGridX >= 0 &&
+        newGridX < mapGrid[0].length &&
+        newGridY >= 0 &&
+        newGridY < mapGrid.length &&
+        mapGrid[newGridY][newGridX] === 0
+      ) {
+        npc.gridX = newGridX;
+        npc.gridY = newGridY;
+      }
     }
   }
 }
