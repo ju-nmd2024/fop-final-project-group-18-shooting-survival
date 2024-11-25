@@ -24,12 +24,12 @@ function startButton() {
 function videoButton() {
   strokeWeight(0); // No border
   fill(0, 0, 255); // Blue button color
-  rect(850, 600, 100, 40, 10); // Button position and size
+  rect(800, 600, 100, 40, 10); // Button position and size
 
   fill(255); // White text color
   textSize(16); // Text size
   textAlign(CENTER, CENTER); // Center the text within the button
-  text("Play Video", 900, 620); // Centered text position
+  text("Play Video", 850, 620); // Centered text position
 }
 
 function preload() {
@@ -295,10 +295,6 @@ function updateBullets() {
 
 function drawWinScreen() {
   background(winBackground);
-  textAlign(CENTER, CENTER);
-  textSize(40);
-  fill(102, 51, 0);
-  text("You Win!", width / 2, height / 2);
 }
 
 function drawLostScreen() {
