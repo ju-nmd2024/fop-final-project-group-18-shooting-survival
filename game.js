@@ -147,8 +147,13 @@ class NPC {
     let dx = this.direction.x * this.speed;
     let dy = this.direction.y * this.speed;
 
-    this.gridX = constrain(this.gridX + dx / gridSize, 0, width / gridSize);
-    this.gridY = constrain(this.gridY + dy / gridSize, 0, height / gridSize);
+    // 更新位置
+    this.gridX += dx / gridSize;
+    this.gridY += dy / gridSize;
+
+    // 限制位置在屏幕范围内
+    this.gridX = constrain(this.gridX, 0, width / gridSize - 1);
+    this.gridY = constrain(this.gridY, 0, height / gridSize - 1);
   }
 
   takeDamage() {
@@ -184,7 +189,7 @@ class Bullet {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
