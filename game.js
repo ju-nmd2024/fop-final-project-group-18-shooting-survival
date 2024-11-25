@@ -24,7 +24,7 @@ function preload() {
   character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
   winBackground = loadImage("img/won.png");
   lostBackground = loadImage("img/Lost.jpg");
-  enemy = loadImage("img/enemy1.png");
+  enemy = loadImage("img/enemy.png");
 }
 
 function drawBackground() {
