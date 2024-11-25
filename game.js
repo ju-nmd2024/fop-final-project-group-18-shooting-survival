@@ -89,6 +89,8 @@ class Hero {
     translate(this.x, this.y);
     rotate(this.rotation);
     image(character, -this.size / 2, -this.size / 2, this.size, this.size);
+    fill(0, 0, 0); // Optional: Set color for the ellipse
+    ellipse(43, 24, 3); // Draw the ellipse
     pop();
 
     // 绘制血量条
@@ -306,10 +308,9 @@ function drawLostScreen() {
   fill(255);
   text("Game Over", width / 2, height / 2);
 }
-
 function mousePressed() {
   if (gameState === "menu") {
-    // Button bounds: x = 500, y = 600, width = 100, height = 40
+    // Start game button
     if (
       mouseX > 500 &&
       mouseX < 500 + 100 &&
@@ -319,11 +320,16 @@ function mousePressed() {
       gameState = "playing"; // Transition to playing state
     }
   } else if (gameState === "playing") {
-    // Handle shooting when in playing state
-    let bullet = new Bullet(hero.x, hero.y, hero.rotation, 10, "hero");
+    // Calculate the position of the ellipse relative to the hero
+    let bulletX = hero.x + cos(hero.rotation) * 43 - sin(hero.rotation) * 24;
+    let bulletY = hero.y + sin(hero.rotation) * 43 + cos(hero.rotation) * 24;
+
+    // Create and fire the bullet
+    let bullet = new Bullet(bulletX, bulletY, hero.rotation, 10, "hero");
     bullets.push(bullet);
   }
 }
+
 
 function drawBackground() {
   fill(34, 139, 34);
