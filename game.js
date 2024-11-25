@@ -12,9 +12,10 @@ let gameState = "menu"; // "menu", "playing", "won", "lost"
 
 function preload() {
   character = loadImage("img/character.png");
+  enemy = loadImage("img/enemy2.png");
+  gameStart = loadImage("img/background.png");
   winBackground = loadImage("img/won.png");
   lostBackground = loadImage("img/Lost.jpg");
-  enemy = loadImage("img/enemy2.png");
 }
 
 function setup() {
@@ -198,7 +199,7 @@ function createNPCs() {
 }
 
 function drawMenu() {
-  background(250, 200, 150);
+  background(gameStart);
   textAlign(CENTER, CENTER);
   textSize(40);
   fill(102, 51, 0);
