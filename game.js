@@ -24,7 +24,7 @@ function preload() {
   character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
   winBackground = loadImage("img/won.png");
   lostBackground = loadImage("img/Lost.jpg");
-  enemy = loadImage("img/enemy.png");
+  enemy = loadImage("img/enemy2.png");
 }
 
 function drawBackground() {
@@ -57,7 +57,7 @@ function drawMap() {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     let npc = {
       gridX: floor(random(0, mapGrid[0].length)), // Random grid position
       gridY: floor(random(0, mapGrid.length)),
@@ -76,11 +76,13 @@ function createNPCs() {
 
 function drawNPCs() {
   for (let npc of npcs) {
-    let enlargedSize = npc.size * 5; // 调整放大比例
+    let enlargedSize = npc.size * 3.5; // 放大尺寸
+    let offset = 15; // 向上移动的偏移量，可以根据实际效果调整
+
     image(
       enemy,
-      npc.gridX * gridSize + gridSize / 2 - enlargedSize / 2,
-      npc.gridY * gridSize + gridSize / 2 - enlargedSize / 2,
+      npc.gridX * gridSize + gridSize / 2 - enlargedSize / 2, // X 坐标不变
+      npc.gridY * gridSize + gridSize / 2 - enlargedSize / 2 - offset, // Y 坐标上移 offset
       enlargedSize,
       enlargedSize
     );
