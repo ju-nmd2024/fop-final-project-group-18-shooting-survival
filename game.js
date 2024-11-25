@@ -76,12 +76,13 @@ function createNPCs() {
 
 function drawNPCs() {
   for (let npc of npcs) {
+    let enlargedSize = npc.size * 5; // 调整放大比例
     image(
       enemy,
-      npc.gridX * gridSize + gridSize / 2 - npc.size / 2,
-      npc.gridY * gridSize + gridSize / 2 - npc.size / 2,
-      npc.size,
-      npc.size
+      npc.gridX * gridSize + gridSize / 2 - enlargedSize / 2,
+      npc.gridY * gridSize + gridSize / 2 - enlargedSize / 2,
+      enlargedSize,
+      enlargedSize
     );
   }
 }
