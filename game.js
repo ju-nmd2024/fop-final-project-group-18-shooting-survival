@@ -10,6 +10,29 @@ let bullets = [];
 let gridSize = 100;
 let gameState = "menu"; // "menu", "playing", "won", "lost"
 
+function startButton() {
+  strokeWeight(0); // No border
+  fill(0, 0, 255); // Blue button color
+  rect(500, 600, 100, 40,10); // Button position and size
+
+  fill(255); // White text color
+  textSize(16); // Text size
+  textAlign(CENTER, CENTER); // Center the text within the button
+  text("Start Game", 550, 620); // Centered text position
+}
+
+function videoButton() {
+  strokeWeight(0); // No border
+  fill(0, 0, 255); // Blue button color
+  rect(850, 600, 100, 40,10); // Button position and size
+
+  fill(255); // White text color
+  textSize(16); // Text size
+  textAlign(CENTER, CENTER); // Center the text within the button
+  text("Play Video", 900, 620); // Centered text position
+}
+
+
 function preload() {
   character = loadImage("img/character.png");
   enemy = loadImage("img/enemy2.png");
@@ -204,11 +227,11 @@ function createNPCs() {
 }
 
 function drawMenu() {
-  background(gameStart);
-  textAlign(CENTER, CENTER);
-  textSize(40);
-  fill(102, 51, 0);
-  text("Start Game", width / 2, height / 2);
+  background(gameStart); // Use your existing background
+
+  // Draw the custom button
+  startButton();
+  videoButton();
 }
 
 function drawGame() {
@@ -287,8 +310,17 @@ function drawLostScreen() {
 
 function mousePressed() {
   if (gameState === "menu") {
-    gameState = "playing";
+    // Button bounds: x = 500, y = 600, width = 100, height = 40
+    if (
+      mouseX > 500 &&
+      mouseX < 500 + 100 &&
+      mouseY > 600 &&
+      mouseY < 600 + 40
+    ) {
+      gameState = "playing"; // Transition to playing state
+    }
   } else if (gameState === "playing") {
+    // Handle shooting when in playing state
     let bullet = new Bullet(hero.x, hero.y, hero.rotation, 10, "hero");
     bullets.push(bullet);
   }
@@ -343,3 +375,4 @@ function drawHealthBar(character) {
     healthBarHeight
   );
 }
+
