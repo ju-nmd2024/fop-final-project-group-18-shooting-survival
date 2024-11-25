@@ -13,7 +13,7 @@ let gameState = "menu"; // "menu", "playing", "won", "lost"
 function startButton() {
   strokeWeight(0); // No border
   fill(0, 0, 255); // Blue button color
-  rect(500, 600, 100, 40,10); // Button position and size
+  rect(500, 600, 100, 40, 10); // Button position and size
 
   fill(255); // White text color
   textSize(16); // Text size
@@ -24,14 +24,13 @@ function startButton() {
 function videoButton() {
   strokeWeight(0); // No border
   fill(0, 0, 255); // Blue button color
-  rect(850, 600, 100, 40,10); // Button position and size
+  rect(850, 600, 100, 40, 10); // Button position and size
 
   fill(255); // White text color
   textSize(16); // Text size
   textAlign(CENTER, CENTER); // Center the text within the button
   text("Play Video", 900, 620); // Centered text position
 }
-
 
 function preload() {
   character = loadImage("img/character.png");
@@ -42,7 +41,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(1450, 700);
+  createCanvas(1400, 700);
   initializeGame();
 }
 
@@ -375,4 +374,3 @@ function drawHealthBar(character) {
     healthBarHeight
   );
 }
-
