@@ -30,7 +30,7 @@ function preload() {
 function drawBackground() {
   // Ground
   fill(34, 139, 34);
-  rect(0, 0, width, height);
+  background(0, 0, width, height);
 }
 
 let mapGrid = [
