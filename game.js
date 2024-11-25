@@ -1,15 +1,14 @@
 let character;
 let winBackground;
+let lostBackground;
+let enemy;
 
-let x = 50;
-let y = 50;
-let rotation = 0;
-let speed = 0;
-
-let bullets = [];
+let hero;
 let npcs = [];
+let bullets = [];
 
 let gridSize = 100;
+let gameState = "menu"; // "menu", "playing", "won", "lost"
 
 let gameStarted = false;
 let gameEnded = false;
@@ -17,20 +16,278 @@ let gameWon = false;
 
 function setup() {
   createCanvas(1450, 700);
-  createNPCs();
+  initializeGame();
 }
 
-function preload() {
-  character = loadImage("img/character.png"); // Ensure the image is uploaded in the editor
-  winBackground = loadImage("img/won.png");
-  lostBackground = loadImage("img/Lost.jpg");
-  enemy = loadImage("img/enemy2.png");
+function draw() {
+  if (gameState === "menu") {
+    drawMenu();
+  } else if (gameState === "playing") {
+    drawGame();
+  } else if (gameState === "won") {
+    drawWinScreen();
+  } else if (gameState === "lost") {
+    drawLostScreen();
+  }
+}
+
+function initializeGame() {
+  hero = new Hero(50, 50, 3); // 玩家初始位置和血量
+  npcs = [];
+  bullets = [];
+  createNPCs();
+  gameState = "menu";
+}
+
+class Hero {
+  constructor(x, y, health) {
+    this.x = x;
+    this.y = y;
+    this.rotation = 0;
+    this.speed = 0;
+    this.size = 100;
+    this.health = health; // 血量
+  }
+
+  move() {
+    this.x += cos(this.rotation) * this.speed;
+    this.y += sin(this.rotation) * this.speed;
+
+    // 限制在边界内
+    this.x = constrain(this.x, 0, width);
+    this.y = constrain(this.y, 0, height);
+  }
+
+  draw() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.rotation);
+    image(character, -this.size / 2, -this.size / 2, this.size, this.size);
+    pop();
+
+    // 绘制血量条
+    drawHealthBar(this);
+  }
+
+  takeDamage() {
+    this.health -= 1;
+    if (this.health <= 0) {
+      gameState = "lost"; // 游戏失败
+    }
+  }
+
+  handleInput() {
+    if (keyIsDown(UP_ARROW)) {
+      this.speed = 5;
+    } else if (keyIsDown(DOWN_ARROW)) {
+      this.speed = -5;
+    } else {
+      this.speed = 0;
+    }
+
+    if (keyIsDown(LEFT_ARROW)) {
+      this.rotation -= 0.05;
+    } else if (keyIsDown(RIGHT_ARROW)) {
+      this.rotation += 0.05;
+    }
+  }
+}
+
+class NPC {
+  constructor(gridX, gridY, health) {
+    this.gridX = gridX;
+    this.gridY = gridY;
+    this.size = 40;
+    this.health = health;
+    this.direction = p5.Vector.random2D(); // 随机方向
+    this.speed = random(0.5, 1.5); // 随机速度
+    this.moveCooldown = floor(random(60, 180)); // 随机移动时间间隔
+    this.timer = 0; // 计时器
+  }
+
+  get x() {
+    return this.gridX * gridSize + gridSize / 2;
+  }
+
+  get y() {
+    return this.gridY * gridSize + gridSize / 2;
+  }
+
+  draw() {
+    let enlargedSize = this.size * 3.5;
+    let offset = 15;
+    image(
+      enemy,
+      this.x - enlargedSize / 2,
+      this.y - enlargedSize / 2 - offset,
+      enlargedSize,
+      enlargedSize
+    );
+
+    // 绘制血量条
+    drawHealthBar(this);
+  }
+
+  randomMove() {
+    // 移动计时器
+    this.timer++;
+    if (this.timer > this.moveCooldown) {
+      // 改变方向和速度
+      this.direction = p5.Vector.random2D();
+      this.speed = random(0.5, 1.5);
+      this.timer = 0;
+      this.moveCooldown = floor(random(60, 180)); // 重置移动间隔
+    }
+
+    // 根据方向移动
+    let dx = this.direction.x * this.speed;
+    let dy = this.direction.y * this.speed;
+
+    this.gridX = constrain(this.gridX + dx / gridSize, 0, width / gridSize);
+    this.gridY = constrain(this.gridY + dy / gridSize, 0, height / gridSize);
+  }
+
+  takeDamage() {
+    this.health -= 1;
+    if (this.health <= 0) {
+      npcs = npcs.filter((npc) => npc !== this); // 从列表中移除
+    }
+  }
+}
+
+class Bullet {
+  constructor(x, y, angle, speed, owner) {
+    this.x = x;
+    this.y = y;
+    this.vx = cos(angle) * speed;
+    this.vy = sin(angle) * speed;
+    this.owner = owner; // 子弹的发射者（区分玩家和 NPC）
+  }
+
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+
+  draw() {
+    fill(255, 0, 0);
+    ellipse(this.x, this.y, 5, 5);
+  }
+
+  isOutOfBounds() {
+    return this.x < 0 || this.x > width || this.y < 0 || this.y > height;
+  }
+}
+
+function createNPCs() {
+  for (let i = 0; i < 10; i++) {
+    let gridX = floor(random(0, 14));
+    let gridY = floor(random(0, 7));
+
+    // 确保 NPC 生成在可行走路径上
+    while (mapGrid[gridY][gridX] !== 0) {
+      gridX = floor(random(0, 14));
+      gridY = floor(random(0, 7));
+    }
+
+    npcs.push(new NPC(gridX, gridY, 3));
+  }
+}
+
+function drawMenu() {
+  background(250, 200, 150);
+  textAlign(CENTER, CENTER);
+  textSize(40);
+  fill(102, 51, 0);
+  text("Start Game", width / 2, height / 2);
+}
+
+function drawGame() {
+  drawBackground();
+  drawMap();
+
+  // 绘制和更新玩家
+  hero.handleInput();
+  hero.move();
+  hero.draw();
+
+  // 绘制和更新 NPC
+  for (let npc of npcs) {
+    npc.randomMove(); // 调用随机移动逻辑
+    npc.draw();
+  }
+
+  // 子弹逻辑
+  updateBullets();
+
+  // 检查胜负条件
+  if (npcs.length === 0) {
+    gameState = "won";
+  }
+}
+
+function updateBullets() {
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    let bullet = bullets[i];
+    bullet.move();
+    bullet.draw();
+
+    // 检查子弹是否出界
+    if (bullet.isOutOfBounds()) {
+      bullets.splice(i, 1);
+      continue;
+    }
+
+    // 检查子弹碰撞
+    if (
+      bullet.owner !== "hero" &&
+      dist(bullet.x, bullet.y, hero.x, hero.y) < hero.size / 2
+    ) {
+      hero.takeDamage();
+      bullets.splice(i, 1);
+    }
+
+    for (let npc of npcs) {
+      if (
+        bullet.owner === "hero" &&
+        dist(bullet.x, bullet.y, npc.x, npc.y) < npc.size / 2
+      ) {
+        npc.takeDamage();
+        bullets.splice(i, 1);
+        break;
+      }
+    }
+  }
+}
+
+function drawWinScreen() {
+  background(winBackground);
+  textAlign(CENTER, CENTER);
+  textSize(40);
+  fill(102, 51, 0);
+  text("You Win!", width / 2, height / 2);
+}
+
+function drawLostScreen() {
+  background(lostBackground);
+  textAlign(CENTER, CENTER);
+  textSize(40);
+  fill(255);
+  text("Game Over", width / 2, height / 2);
+}
+
+function mousePressed() {
+  if (gameState === "menu") {
+    gameState = "playing";
+  } else if (gameState === "playing") {
+    let bullet = new Bullet(hero.x, hero.y, hero.rotation, 10, "hero");
+    bullets.push(bullet);
+  }
 }
 
 function drawBackground() {
-  // Ground
   fill(34, 139, 34);
-  background(0, 0, width, height);
+  rect(0, 0, width, height);
 }
 
 let mapGrid = [
@@ -56,194 +313,24 @@ function drawMap() {
   }
 }
 
-function createNPCs() {
-  for (let i = 0; i < 10; i++) {
-    let npc = {
-      gridX: floor(random(0, mapGrid[0].length)), // Random grid position
-      gridY: floor(random(0, mapGrid.length)),
-      size: 40,
-    };
+function drawHealthBar(character) {
+  let healthBarWidth = 40;
+  let healthBarHeight = 5;
+  let healthRatio = character.health / 3;
 
-    // Ensure NPC spawns on a walkable path
-    while (mapGrid[npc.gridY][npc.gridX] !== 0) {
-      npc.gridX = floor(random(0, mapGrid[0].length));
-      npc.gridY = floor(random(0, mapGrid.length));
-    }
+  fill(255, 0, 0);
+  rect(
+    character.x - healthBarWidth / 2,
+    character.y - 50,
+    healthBarWidth,
+    healthBarHeight
+  );
 
-    npcs.push(npc);
-  }
-}
-
-function drawNPCs() {
-  for (let npc of npcs) {
-    let enlargedSize = npc.size * 3.5; // 放大尺寸
-    let offset = 15; // 向上移动的偏移量，可以根据实际效果调整
-
-    image(
-      enemy,
-      npc.gridX * gridSize + gridSize / 2 - enlargedSize / 2, // X 坐标不变
-      npc.gridY * gridSize + gridSize / 2 - enlargedSize / 2 - offset, // Y 坐标上移 offset
-      enlargedSize,
-      enlargedSize
-    );
-  }
-}
-
-function moveNPCs() {
-  for (let npc of npcs) {
-    // Current pixel position of the NPC
-    let npcX = npc.gridX * gridSize + gridSize / 2;
-    let npcY = npc.gridY * gridSize + gridSize / 2;
-
-    // Hero's position
-    let targetX = x;
-    let targetY = y;
-
-    // Calculate direction toward hero
-    let dx = targetX - npcX;
-    let dy = targetY - npcY;
-    let distance = sqrt(dx * dx + dy * dy);
-
-    if (distance > 1) {
-      // Normalize direction and set step size
-      let stepX = (dx / distance) * 2; // Speed of 2 pixels per frame
-      let stepY = (dy / distance) * 2;
-
-      // Update NPC position (pixel-based movement)
-      npc.gridX += stepX / gridSize;
-      npc.gridY += stepY / gridSize;
-
-      // Update NPC grid position (used for collision detection)
-      npc.gridX = floor(npcX / gridSize);
-      npc.gridY = floor(npcY / gridSize);
-    }
-  }
-}
-
-function draw() {
-  if (!gameStarted) {
-    background(250, 200, 150);
-    textAlign(CENTER, CENTER);
-    textSize(40);
-    fill(102, 51, 0);
-    text("Start Game", width / 2, height / 2);
-  } else if (gameEnded) {
-    background(lostBackground);
-    textAlign(CENTER, CENTER);
-    textSize(40);
-    fill(255);
-    text("Game Over", width / 2, height / 2 - 40);
-    textSize(20);
-    text("Click to Restart", width / 2, height / 2 + 40);
-  } else if (gameWon) {
-    background(winBackground);
-    textAlign(CENTER, CENTER);
-    textSize(40);
-    fill(102, 51, 0);
-    text("You Win!", width / 2, height / 2 - 40);
-    textSize(30);
-    text("Click to Restart", width / 2, height / 2 + 40);
-  } else {
-    drawBackground();
-    drawMap(); // Draw the map
-    drawNPCs(); // Draw NPCs
-    hero(x, y, rotation);
-
-    moveNPCs(); // Ensure NPCs move toward the hero continuously
-
-    // Check if any NPC collides with the hero
-    for (let npc of npcs) {
-      let npcX = npc.gridX * gridSize + gridSize / 2;
-      let npcY = npc.gridY * gridSize + gridSize / 2;
-      if (dist(npcX, npcY, x, y) < gridSize / 2) {
-        gameEnded = true; // Game over when NPC reaches the hero
-      }
-    }
-
-    // Update hero position based on movement
-    x = x + Math.cos(rotation) * speed;
-    y = y + Math.sin(rotation) * speed;
-
-    // Handle key presses for movement
-    if (keyIsDown(38)) {
-      speed = 5;
-    } else if (keyIsDown(40)) {
-      speed = -5;
-    } else {
-      speed = 0;
-    }
-
-    if (keyIsDown(37)) {
-      rotation -= 0.05;
-    } else if (keyIsDown(39)) {
-      rotation += 0.05;
-    }
-
-    // Update bullets
-    for (let i = bullets.length - 1; i >= 0; i--) {
-      let b = bullets[i];
-      b.x += b.vx;
-      b.y += b.vy;
-
-      fill(255, 0, 0);
-      ellipse(b.x, b.y, 5, 2);
-
-      if (b.x < 0 || b.x > width || b.y < 0 || b.y > height) {
-        bullets.splice(i, 1);
-      }
-    }
-
-    // Check for win condition
-    if (bullets.length > 10) {
-      gameWon = true;
-      gameStarted = false;
-    }
-
-    // Check for boundary condition to end the game
-    if (x < 0 || x > width || y < 0 || y > height) {
-      gameEnded = true;
-      gameStarted = false;
-    }
-  }
-}
-
-function mousePressed() {
-  if (!gameStarted) {
-    gameStarted = true;
-  } else if (gameEnded || gameWon) {
-    resetGame();
-  } else {
-    let gunX = x + Math.cos(rotation) * 43 - Math.sin(rotation) * 24;
-    let gunY = y + Math.sin(rotation) * 43 + Math.cos(rotation) * 24;
-
-    let bulletSpeed = 10;
-    let bullet = {
-      x: gunX,
-      y: gunY,
-      vx: Math.cos(rotation) * bulletSpeed,
-      vy: Math.sin(rotation) * bulletSpeed,
-    };
-    bullets.push(bullet);
-  }
-}
-
-function resetGame() {
-  gameStarted = false;
-  gameEnded = false;
-  gameWon = false;
-  x = 50;
-  y = 50;
-  rotation = 0;
-  speed = 0;
-  bullets = [];
-}
-
-function hero(x, y, rotation) {
-  push();
-  translate(x, y);
-  rotate(rotation);
-  image(character, -50, -50, 100, 100);
-  fill(0);
-  ellipse(43, 24, 3);
-  pop();
+  fill(0, 255, 0);
+  rect(
+    character.x - healthBarWidth / 2,
+    character.y - 50,
+    healthBarWidth * healthRatio,
+    healthBarHeight
+  );
 }
