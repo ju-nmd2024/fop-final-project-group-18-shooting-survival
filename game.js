@@ -10,9 +10,12 @@ let bullets = [];
 let gridSize = 100;
 let gameState = "menu"; // "menu", "playing", "won", "lost"
 
-let gameStarted = false;
-let gameEnded = false;
-let gameWon = false;
+function preload() {
+  character = loadImage("img/character.png");
+  winBackground = loadImage("img/won.png");
+  lostBackground = loadImage("img/Lost.jpg");
+  enemy = loadImage("img/enemy2.png");
+}
 
 function setup() {
   createCanvas(1450, 700);
@@ -180,7 +183,7 @@ class Bullet {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
