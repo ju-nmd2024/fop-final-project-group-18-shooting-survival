@@ -213,7 +213,7 @@ class Bullet {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
@@ -294,7 +294,9 @@ function updateBullets() {
 }
 
 function drawWinScreen() {
-  background(winBackground);
+  background(0);
+  image(winBackground, 0 , 0 , width, height)
+
 }
 
 function drawLostScreen() {
