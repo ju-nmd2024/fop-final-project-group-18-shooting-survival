@@ -189,7 +189,11 @@ class Bullet {
 }
 
 function createNPCs() {
+<<<<<<< HEAD
   for (let i = 0; i < 10; i++) {
+=======
+  for (let i = 0; i <=9; i++) {
+>>>>>>> afaa52096785ffc44235f8182650dd5c7edd4610
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
