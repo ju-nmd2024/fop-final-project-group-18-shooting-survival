@@ -445,7 +445,6 @@ function mousePressed() {
   }
 }
 
-
 function drawBackground() {
   image(backgroundImage, 0, 0, width, height);
 }
@@ -466,7 +465,7 @@ function drawMap() {
       if (mapGrid[y][x] === 0) {
         fill(200, 200, 200, 0); // 可行走路径
       } else if (mapGrid[y][x] === 1) {
-        fill(0, 0, 255, 255); // 障碍物
+        fill(0, 0, 200, 180); // 障碍物
       }
       rect(x * gridSize, y * gridSize, gridSize, gridSize);
     }
