@@ -6,6 +6,7 @@ let enemy;
 let hero;
 let npcs = [];
 let bullets = [];
+let particles = []; // Global array for particle effects
 
 let gridSize = 100;
 let gameState = "menu"; // "menu", "playing", "won", "lost"
@@ -30,6 +31,14 @@ function videoButton() {
   textSize(16); // Text size
   textAlign(CENTER, CENTER); // Center the text within the button
   text("Play Video", 850, 620); // Centered text position
+}
+
+function createParticles(x, y) {
+  console.log("Particles created at:", x, y); // Debugging
+  for (let i = 0; i < 100; i++) { // Adjust particle count for performance
+    let particle = new Particle(x, y);
+    particles.push(particle);
+  }
 }
 
 function preload() {
@@ -204,13 +213,49 @@ class Bullet {
 
   draw() {
     fill(255, 0, 0);
-    ellipse(this.x, this.y, 5, 5);
+    ellipse(this.x, this.y, 5, 2);
   }
 
   isOutOfBounds() {
     return this.x < 0 || this.x > width || this.y < 0 || this.y > height;
   }
 }
+
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.velocity = random(1, 3); // Adjust speed for visual effect
+    this.angle = random(TWO_PI); // Full 360-degree explosion
+    this.frames = 0; 
+    this.maxFrames = 50 + floor(random(50)); // Random lifespan
+  }
+
+  update() {
+    // Move particle
+    this.x += cos(this.angle) * this.velocity;
+    this.y += sin(this.angle) * this.velocity;
+
+    // Gradually slow down
+    this.velocity *= 0.95;
+
+    // Track lifespan
+    this.frames++;
+  }
+
+  draw() {
+    push();
+    noStroke();
+    fill(255, 0, 0); // Orange with transparency
+    ellipse(this.x, this.y, 2); // Adjust size if needed
+    pop();
+  }
+
+  isDead() {
+    return this.frames >= this.maxFrames; // Remove particle after lifespan
+  }
+}
+
 
 function createNPCs() {
   for (let i = 0; i < 10; i++) {
@@ -239,25 +284,36 @@ function drawGame() {
   drawBackground();
   drawMap();
 
-  // 绘制和更新玩家
+  // Player logic
   hero.handleInput();
   hero.move();
   hero.draw();
 
-  // 绘制和更新 NPC
+  // NPCs logic
   for (let npc of npcs) {
-    npc.randomMove(); // 调用随机移动逻辑
+    npc.randomMove();
     npc.draw();
   }
 
-  // 子弹逻辑
+  // Bullets logic
   updateBullets();
 
-  // 检查胜负条件
+  // Particles logic
+  for (let particle of particles) {
+    particle.update();
+    particle.draw();
+    if (particle.isDead()) {
+      particles.splice(particles.indexOf(particle), 1); // Remove dead particles
+    }
+  }
+  
+
+  // Check for win condition
   if (npcs.length === 0) {
     gameState = "won";
   }
 }
+
 
 function updateBullets() {
   for (let i = bullets.length - 1; i >= 0; i--) {
@@ -279,23 +335,24 @@ function updateBullets() {
       hero.takeDamage();
       bullets.splice(i, 1);
     }
-
     for (let npc of npcs) {
       if (
         bullet.owner === "hero" &&
         dist(bullet.x, bullet.y, npc.x, npc.y) < npc.size / 2
       ) {
         npc.takeDamage();
+        createParticles(npc.x, npc.y); // Add particle effect here
         bullets.splice(i, 1);
         break;
       }
     }
+    
   }
 }
 
 function drawWinScreen() {
   background(0);
-  image(winBackground, 0 , 0 , width, height)
+  image(winBackground, 0 , 0 , width, height);
 
 }
 
