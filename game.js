@@ -36,10 +36,10 @@ function videoButton() {
 function playAgain() {
   strokeWeight(0); // No border
   fill(0, 0, 255); // Blue button color
-  rect(650, 600, 100, 40, 10); // Button position and size
+  rect(680, 600, 120, 60, 10); // Button position and size
 
   fill(255); // White text color
-  textSize(16); // Text size
+  textSize(18); // Text size
   textAlign(CENTER, CENTER); // Center the text within the button
   text("Play Again", 700, 620); // Centered text position
 }
@@ -57,7 +57,7 @@ function preload() {
   character = loadImage("img/character.png");
   enemy = loadImage("img/enemy2.png");
   gameStart = loadImage("img/game start.png");
-  winBackground = loadImage("img/win.webp");
+  winBackground = loadImage("img/win game.webp");
   lostBackground = loadImage("img/gmae lose.webp");
   backgroundImage = loadImage("img/R.jpg");
 }
