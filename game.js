@@ -33,6 +33,17 @@ function videoButton() {
   text("Play Video", 850, 620); // Centered text position
 }
 
+function playAgain() {
+  strokeWeight(0); // No border
+  fill(0, 0, 255); // Blue button color
+  rect(650, 600, 100, 40, 10); // Button position and size
+
+  fill(255); // White text color
+  textSize(16); // Text size
+  textAlign(CENTER, CENTER); // Center the text within the button
+  text("Play Again", 700, 620); // Centered text position
+}
+
 function createParticles(x, y) {
   console.log("Particles created at:", x, y); // Debugging
   for (let i = 0; i < 100; i++) {
@@ -290,7 +301,7 @@ class Particle {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 1; i++) {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
@@ -391,6 +402,7 @@ function updateBullets() {
 function drawWinScreen() {
   background(0);
   image(winBackground, 0, 0, width, height);
+  playAgain();
 }
 
 function drawLostScreen() {
@@ -419,8 +431,20 @@ function mousePressed() {
     // Create and fire the bullet
     let bullet = new Bullet(bulletX, bulletY, hero.rotation, 10, "hero");
     bullets.push(bullet);
+  } else if (gameState === "won" || gameState === "lost") {
+    // Play Again button
+    if (
+      mouseX > 650 &&
+      mouseX < 650 + 100 &&
+      mouseY > 600 &&
+      mouseY < 600 + 40
+    ) {
+      initializeGame(); // Reset game variables
+      gameState = "playing"; // Transition to playing state
+    }
   }
 }
+
 
 function drawBackground() {
   image(backgroundImage, 0, 0, width, height);
@@ -442,7 +466,7 @@ function drawMap() {
       if (mapGrid[y][x] === 0) {
         fill(200, 200, 200, 0); // 可行走路径
       } else if (mapGrid[y][x] === 1) {
-        fill(0, 0, 102, 180); // 障碍物
+        fill(0, 0, 255, 255); // 障碍物
       }
       rect(x * gridSize, y * gridSize, gridSize, gridSize);
     }
