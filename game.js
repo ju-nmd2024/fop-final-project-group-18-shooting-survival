@@ -127,17 +127,17 @@ class Hero {
   }
 
   handleInput() {
-    if (keyIsDown(UP_ARROW)) {
+    if (keyIsDown(87)) {
       this.speed = 5;
-    } else if (keyIsDown(DOWN_ARROW)) {
+    } else if (keyIsDown(83)) {
       this.speed = -5;
     } else {
       this.speed = 0;
     }
 
-    if (keyIsDown(LEFT_ARROW)) {
+    if (keyIsDown(65)) {
       this.rotation -= 0.05;
-    } else if (keyIsDown(RIGHT_ARROW)) {
+    } else if (keyIsDown(68)) {
       this.rotation += 0.05;
     }
   }
