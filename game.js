@@ -215,14 +215,13 @@ class NPC {
     }
   }
 }
-
 class Bullet {
   constructor(x, y, angle, speed, owner) {
     this.x = x;
     this.y = y;
     this.vx = cos(angle) * speed;
     this.vy = sin(angle) * speed;
-    this.owner = owner; // 子弹的发射者（区分玩家和 NPC）
+    this.owner = owner; // "hero" or "npc"
   }
 
   move() {
@@ -238,7 +237,23 @@ class Bullet {
   isOutOfBounds() {
     return this.x < 0 || this.x > width || this.y < 0 || this.y > height;
   }
+
+  hitsObstacle() {
+    // Convert bullet position to grid coordinates
+    let gridX = floor(this.x / gridSize);
+    let gridY = floor(this.y / gridSize);
+
+    // Check if the grid cell is an obstacle
+    return (
+      gridX >= 0 &&
+      gridX < mapGrid[0].length &&
+      gridY >= 0 &&
+      gridY < mapGrid.length &&
+      mapGrid[gridY][gridX] === 1
+    );
+  }
 }
+
 
 class Particle {
   constructor(x, y) {
@@ -333,41 +348,49 @@ function drawGame() {
   }
 }
 
-
 function updateBullets() {
   for (let i = bullets.length - 1; i >= 0; i--) {
     let bullet = bullets[i];
     bullet.move();
     bullet.draw();
 
-    // 检查子弹是否出界
+    // Remove the bullet if it goes out of bounds
     if (bullet.isOutOfBounds()) {
       bullets.splice(i, 1);
       continue;
     }
 
-    // 检查子弹碰撞
+    // Remove the bullet if it hits an obstacle
+    if (bullet.hitsObstacle()) {
+      bullets.splice(i, 1);
+      continue;
+    }
+
+    // Check collisions with the hero
     if (
       bullet.owner !== "hero" &&
       dist(bullet.x, bullet.y, hero.x, hero.y) < hero.size / 2
     ) {
       hero.takeDamage();
       bullets.splice(i, 1);
+      continue;
     }
+
+    // Check collisions with NPCs
     for (let npc of npcs) {
       if (
         bullet.owner === "hero" &&
         dist(bullet.x, bullet.y, npc.x, npc.y) < npc.size / 2
       ) {
         npc.takeDamage();
-        createParticles(npc.x, npc.y); // Add particle effect here
+        createParticles(npc.x, npc.y);
         bullets.splice(i, 1);
         break;
       }
     }
-    
   }
 }
+
 
 function drawWinScreen() {
   background(0);
