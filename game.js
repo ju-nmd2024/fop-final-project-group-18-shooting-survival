@@ -2,7 +2,7 @@ let character;
 let winBackground;
 let lostBackground;
 let enemy;
-
+let backgroundImage;
 let hero;
 let npcs = [];
 let bullets = [];
@@ -48,6 +48,7 @@ function preload() {
   gameStart = loadImage("img/game start.png");
   winBackground = loadImage("img/win.webp");
   lostBackground = loadImage("img/gmae lose.webp");
+  backgroundImage = loadImage("img/R.jpg");
 }
 
 function setup() {
@@ -422,8 +423,7 @@ function mousePressed() {
 }
 
 function drawBackground() {
-  fill(34, 139, 34);
-  rect(0, 0, width, height);
+  image(backgroundImage, 0, 0, width, height);
 }
 
 let mapGrid = [
@@ -440,9 +440,9 @@ function drawMap() {
   for (let y = 0; y < mapGrid.length; y++) {
     for (let x = 0; x < mapGrid[0].length; x++) {
       if (mapGrid[y][x] === 0) {
-        fill(200, 200, 200); // 可行走路径
+        fill(200, 200, 200, 0); // 可行走路径
       } else if (mapGrid[y][x] === 1) {
-        fill(100, 200, 100); // 障碍物
+        fill(0, 0, 102, 180); // 障碍物
       }
       rect(x * gridSize, y * gridSize, gridSize, gridSize);
     }
