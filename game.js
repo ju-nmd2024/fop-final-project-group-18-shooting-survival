@@ -230,7 +230,7 @@ class Bullet {
 
   draw() {
     fill(255, 0, 0);
-    ellipse(this.x, this.y, 5, 2);
+    ellipse(this.x, this.y, 20, 10);
   }
 
   isOutOfBounds() {
