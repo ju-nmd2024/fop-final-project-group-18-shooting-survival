@@ -83,15 +83,28 @@ class Hero {
     this.size = 100;
     this.health = health; // 血量
   }
-
   move() {
-    this.x += cos(this.rotation) * this.speed;
-    this.y += sin(this.rotation) * this.speed;
-
-    // 限制在边界内
-    this.x = constrain(this.x, 0, width);
-    this.y = constrain(this.y, 0, height);
+    let nextX = this.x + cos(this.rotation) * this.speed;
+    let nextY = this.y + sin(this.rotation) * this.speed;
+  
+    // Convert next position to grid coordinates
+    let gridX = floor(nextX / gridSize);
+    let gridY = floor(nextY / gridSize);
+  
+    // Check if within bounds and on a walkable cell
+    if (
+      gridX >= 0 &&
+      gridX < mapGrid[0].length &&
+      gridY >= 0 &&
+      gridY < mapGrid.length &&
+      mapGrid[gridY][gridX] === 0
+    ) {
+      // Update hero position only if it's a walkable cell
+      this.x = nextX;
+      this.y = nextY;
+    }
   }
+  
 
   draw() {
     push();
@@ -164,30 +177,36 @@ class NPC {
     // 绘制血量条
     drawHealthBar(this);
   }
-
   randomMove() {
-    // 移动计时器
     this.timer++;
     if (this.timer > this.moveCooldown) {
-      // 改变方向和速度
       this.direction = p5.Vector.random2D();
       this.speed = random(0.5, 1.5);
       this.timer = 0;
-      this.moveCooldown = floor(random(60, 180)); // 重置移动间隔
+      this.moveCooldown = floor(random(60, 180));
     }
-
-    // 根据方向移动
-    let dx = this.direction.x * this.speed;
-    let dy = this.direction.y * this.speed;
-
-    // 更新位置
-    this.gridX += dx / gridSize;
-    this.gridY += dy / gridSize;
-
-    // 限制位置在屏幕范围内
-    this.gridX = constrain(this.gridX, 0, width / gridSize - 1);
-    this.gridY = constrain(this.gridY, 0, height / gridSize - 1);
+  
+    let nextX = this.x + this.direction.x * this.speed;
+    let nextY = this.y + this.direction.y * this.speed;
+  
+    // Convert next position to grid coordinates
+    let gridX = floor(nextX / gridSize);
+    let gridY = floor(nextY / gridSize);
+  
+    // Check if within bounds and on a walkable cell
+    if (
+      gridX >= 0 &&
+      gridX < mapGrid[0].length &&
+      gridY >= 0 &&
+      gridY < mapGrid.length &&
+      mapGrid[gridY][gridX] === 0
+    ) {
+      // Update NPC position only if it's a walkable cell
+      this.gridX += this.direction.x * this.speed / gridSize;
+      this.gridY += this.direction.y * this.speed / gridSize;
+    }
   }
+  
 
   takeDamage() {
     this.health -= 1;
