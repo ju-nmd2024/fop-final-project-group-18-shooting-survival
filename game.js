@@ -35,7 +35,8 @@ function videoButton() {
 
 function createParticles(x, y) {
   console.log("Particles created at:", x, y); // Debugging
-  for (let i = 0; i < 100; i++) { // Adjust particle count for performance
+  for (let i = 0; i < 100; i++) {
+    // Adjust particle count for performance
     let particle = new Particle(x, y);
     particles.push(particle);
   }
@@ -45,8 +46,8 @@ function preload() {
   character = loadImage("img/character.png");
   enemy = loadImage("img/enemy2.png");
   gameStart = loadImage("img/background.png");
-  winBackground = loadImage("img/won.png");
-  lostBackground = loadImage("img/Lost.jpg");
+  winBackground = loadImage("img/win.webp");
+  lostBackground = loadImage("img/gmae lose.webp");
 }
 
 function setup() {
@@ -86,11 +87,11 @@ class Hero {
   move() {
     let nextX = this.x + cos(this.rotation) * this.speed;
     let nextY = this.y + sin(this.rotation) * this.speed;
-  
+
     // Convert next position to grid coordinates
     let gridX = floor(nextX / gridSize);
     let gridY = floor(nextY / gridSize);
-  
+
     // Check if within bounds and on a walkable cell
     if (
       gridX >= 0 &&
@@ -104,7 +105,6 @@ class Hero {
       this.y = nextY;
     }
   }
-  
 
   draw() {
     push();
@@ -185,14 +185,14 @@ class NPC {
       this.timer = 0;
       this.moveCooldown = floor(random(60, 180));
     }
-  
+
     let nextX = this.x + this.direction.x * this.speed;
     let nextY = this.y + this.direction.y * this.speed;
-  
+
     // Convert next position to grid coordinates
     let gridX = floor(nextX / gridSize);
     let gridY = floor(nextY / gridSize);
-  
+
     // Check if within bounds and on a walkable cell
     if (
       gridX >= 0 &&
@@ -202,11 +202,10 @@ class NPC {
       mapGrid[gridY][gridX] === 0
     ) {
       // Update NPC position only if it's a walkable cell
-      this.gridX += this.direction.x * this.speed / gridSize;
-      this.gridY += this.direction.y * this.speed / gridSize;
+      this.gridX += (this.direction.x * this.speed) / gridSize;
+      this.gridY += (this.direction.y * this.speed) / gridSize;
     }
   }
-  
 
   takeDamage() {
     this.health -= 1;
@@ -254,14 +253,13 @@ class Bullet {
   }
 }
 
-
 class Particle {
   constructor(x, y) {
     this.x = x;
     this.y = y;
     this.velocity = random(1, 3); // Adjust speed for visual effect
     this.angle = random(TWO_PI); // Full 360-degree explosion
-    this.frames = 0; 
+    this.frames = 0;
     this.maxFrames = 50 + floor(random(50)); // Random lifespan
   }
 
@@ -289,7 +287,6 @@ class Particle {
     return this.frames >= this.maxFrames; // Remove particle after lifespan
   }
 }
-
 
 function createNPCs() {
   for (let i = 0; i < 10; i++) {
@@ -340,7 +337,6 @@ function drawGame() {
       particles.splice(particles.indexOf(particle), 1); // Remove dead particles
     }
   }
-  
 
   // Check for win condition
   if (npcs.length === 0) {
@@ -391,11 +387,9 @@ function updateBullets() {
   }
 }
 
-
 function drawWinScreen() {
   background(0);
-  image(winBackground, 0 , 0 , width, height);
-
+  image(winBackground, 0, 0, width, height);
 }
 
 function drawLostScreen() {
@@ -426,7 +420,6 @@ function mousePressed() {
     bullets.push(bullet);
   }
 }
-
 
 function drawBackground() {
   fill(34, 139, 34);
