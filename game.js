@@ -36,7 +36,7 @@ function videoButton() {
 function playAgain() {
   strokeWeight(0); // No border
   fill(0, 0, 255); // Blue button color
-  rect(680, 600, 120, 60, 10); // Button position and size
+  rect(650, 600, 120, 60, 10); // Button position and size
 
   fill(255); // White text color
   textSize(18); // Text size
