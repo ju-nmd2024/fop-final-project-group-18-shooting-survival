@@ -286,7 +286,7 @@ class Particle {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 10; i++) {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
