@@ -36,7 +36,7 @@ function videoButton() {
 function playAgain() {
   strokeWeight(0);
   fill(0, 0, 255);
-  rect(650, 600, 120, 60, 10);
+  rect(650, 600, 100, 40, 10);
   fill(255);
   textSize(18);
   textAlign(CENTER, CENTER);
@@ -286,7 +286,7 @@ class Particle {
 }
 
 function createNPCs() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 1; i++) {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
