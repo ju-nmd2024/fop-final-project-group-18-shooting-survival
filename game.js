@@ -6,48 +6,46 @@ let backgroundImage;
 let hero;
 let npcs = [];
 let bullets = [];
-let particles = []; // Global array for particle effects
+let particles = [];
 
 let gridSize = 100;
-let gameState = "menu"; // "menu", "playing", "won", "lost"
+let gameState = "menu";
 
 function startButton() {
-  strokeWeight(0); // No border
-  fill(0, 0, 255); // Blue button color
-  rect(500, 600, 100, 40, 10); // Button position and size
+  strokeWeight(0);
+  fill(0, 0, 255);
+  rect(500, 600, 100, 40, 10);
 
-  fill(255); // White text color
-  textSize(16); // Text size
-  textAlign(CENTER, CENTER); // Center the text within the button
-  text("Start Game", 550, 620); // Centered text position
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Start Game", 550, 620);
 }
 
 function videoButton() {
-  strokeWeight(0); // No border
-  fill(0, 0, 255); // Blue button color
-  rect(800, 600, 100, 40, 10); // Button position and size
+  strokeWeight(0);
+  fill(0, 0, 255);
+  rect(800, 600, 100, 40, 10);
 
-  fill(255); // White text color
-  textSize(16); // Text size
-  textAlign(CENTER, CENTER); // Center the text within the button
-  text("Play Video", 850, 620); // Centered text position
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text("Play Video", 850, 620);
 }
 
 function playAgain() {
-  strokeWeight(0); // No border
-  fill(0, 0, 255); // Blue button color
-  rect(650, 600, 120, 60, 10); // Button position and size
-
-  fill(255); // White text color
-  textSize(18); // Text size
-  textAlign(CENTER, CENTER); // Center the text within the button
-  text("Play Again", 700, 620); // Centered text position
+  strokeWeight(0);
+  fill(0, 0, 255);
+  rect(650, 600, 120, 60, 10);
+  fill(255);
+  textSize(18);
+  textAlign(CENTER, CENTER);
+  text("Play Again", 700, 620);
 }
 
 function createParticles(x, y) {
-  console.log("Particles created at:", x, y); // Debugging
+  console.log("Particles created at:", x, y);
   for (let i = 0; i < 100; i++) {
-    // Adjust particle count for performance
     let particle = new Particle(x, y);
     particles.push(particle);
   }
@@ -80,7 +78,7 @@ function draw() {
 }
 
 function initializeGame() {
-  hero = new Hero(50, 50, 3); // 玩家初始位置和血量
+  hero = new Hero(50, 50, 3);
   npcs = [];
   bullets = [];
   createNPCs();
@@ -94,17 +92,15 @@ class Hero {
     this.rotation = 0;
     this.speed = 0;
     this.size = 100;
-    this.health = health; // 血量
+    this.health = health;
   }
   move() {
     let nextX = this.x + cos(this.rotation) * this.speed;
     let nextY = this.y + sin(this.rotation) * this.speed;
 
-    // Convert next position to grid coordinates
     let gridX = floor(nextX / gridSize);
     let gridY = floor(nextY / gridSize);
 
-    // Check if within bounds and on a walkable cell
     if (
       gridX >= 0 &&
       gridX < mapGrid[0].length &&
@@ -112,7 +108,6 @@ class Hero {
       gridY < mapGrid.length &&
       mapGrid[gridY][gridX] === 0
     ) {
-      // Update hero position only if it's a walkable cell
       this.x = nextX;
       this.y = nextY;
     }
@@ -123,18 +118,17 @@ class Hero {
     translate(this.x, this.y);
     rotate(this.rotation);
     image(character, -this.size / 2, -this.size / 2, this.size, this.size);
-    fill(0, 0, 0); // Optional: Set color for the ellipse
-    ellipse(43, 24, 3); // Draw the ellipse
+    fill(0, 0, 0);
+    ellipse(43, 24, 3);
     pop();
 
-    // 绘制血量条
     drawHealthBar(this);
   }
 
   takeDamage() {
     this.health -= 1;
     if (this.health <= 0) {
-      gameState = "lost"; // 游戏失败
+      gameState = "lost";
     }
   }
 
@@ -161,10 +155,10 @@ class NPC {
     this.gridY = gridY;
     this.size = 40;
     this.health = health;
-    this.direction = p5.Vector.random2D(); // 随机方向
-    this.speed = random(0.5, 1.5); // 随机速度
-    this.moveCooldown = floor(random(60, 180)); // 随机移动时间间隔
-    this.timer = 0; // 计时器
+    this.direction = p5.Vector.random2D();
+    this.speed = random(0.5, 1.5);
+    this.moveCooldown = floor(random(60, 180));
+    this.timer = 0;
   }
 
   get x() {
@@ -186,7 +180,6 @@ class NPC {
       enlargedSize
     );
 
-    // 绘制血量条
     drawHealthBar(this);
   }
   randomMove() {
@@ -201,11 +194,9 @@ class NPC {
     let nextX = this.x + this.direction.x * this.speed;
     let nextY = this.y + this.direction.y * this.speed;
 
-    // Convert next position to grid coordinates
     let gridX = floor(nextX / gridSize);
     let gridY = floor(nextY / gridSize);
 
-    // Check if within bounds and on a walkable cell
     if (
       gridX >= 0 &&
       gridX < mapGrid[0].length &&
@@ -213,7 +204,6 @@ class NPC {
       gridY < mapGrid.length &&
       mapGrid[gridY][gridX] === 0
     ) {
-      // Update NPC position only if it's a walkable cell
       this.gridX += (this.direction.x * this.speed) / gridSize;
       this.gridY += (this.direction.y * this.speed) / gridSize;
     }
@@ -222,7 +212,7 @@ class NPC {
   takeDamage() {
     this.health -= 1;
     if (this.health <= 0) {
-      npcs = npcs.filter((npc) => npc !== this); // 从列表中移除
+      npcs = npcs.filter((npc) => npc !== this);
     }
   }
 }
@@ -232,7 +222,7 @@ class Bullet {
     this.y = y;
     this.vx = cos(angle) * speed;
     this.vy = sin(angle) * speed;
-    this.owner = owner; // "hero" or "npc"
+    this.owner = owner;
   }
 
   move() {
@@ -250,11 +240,9 @@ class Bullet {
   }
 
   hitsObstacle() {
-    // Convert bullet position to grid coordinates
     let gridX = floor(this.x / gridSize);
     let gridY = floor(this.y / gridSize);
 
-    // Check if the grid cell is an obstacle
     return (
       gridX >= 0 &&
       gridX < mapGrid[0].length &&
@@ -269,34 +257,31 @@ class Particle {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.velocity = random(1, 3); // Adjust speed for visual effect
-    this.angle = random(TWO_PI); // Full 360-degree explosion
+    this.velocity = random(1, 3);
+    this.angle = random(TWO_PI);
     this.frames = 0;
-    this.maxFrames = 50 + floor(random(50)); // Random lifespan
+    this.maxFrames = 50 + floor(random(50));
   }
 
   update() {
-    // Move particle
     this.x += cos(this.angle) * this.velocity;
     this.y += sin(this.angle) * this.velocity;
 
-    // Gradually slow down
     this.velocity *= 0.95;
 
-    // Track lifespan
     this.frames++;
   }
 
   draw() {
     push();
     noStroke();
-    fill(255, 0, 0); // Orange with transparency
-    ellipse(this.x, this.y, 2); // Adjust size if needed
+    fill(255, 0, 0);
+    ellipse(this.x, this.y, 2);
     pop();
   }
 
   isDead() {
-    return this.frames >= this.maxFrames; // Remove particle after lifespan
+    return this.frames >= this.maxFrames;
   }
 }
 
@@ -305,7 +290,6 @@ function createNPCs() {
     let gridX = floor(random(0, 14));
     let gridY = floor(random(0, 7));
 
-    // 确保 NPC 生成在可行走路径上
     while (mapGrid[gridY][gridX] !== 0) {
       gridX = floor(random(0, 14));
       gridY = floor(random(0, 7));
@@ -316,9 +300,7 @@ function createNPCs() {
 }
 
 function drawMenu() {
-  background(gameStart); // Use your existing background
-
-  // Draw the custom button
+  background(gameStart);
   startButton();
   videoButton();
 }
@@ -346,7 +328,7 @@ function drawGame() {
     particle.update();
     particle.draw();
     if (particle.isDead()) {
-      particles.splice(particles.indexOf(particle), 1); // Remove dead particles
+      particles.splice(particles.indexOf(particle), 1);
     }
   }
 
@@ -421,7 +403,7 @@ function mousePressed() {
       mouseY > 600 &&
       mouseY < 600 + 40
     ) {
-      gameState = "playing"; // Transition to playing state
+      gameState = "playing";
     }
   } else if (gameState === "playing") {
     // Calculate the position of the ellipse relative to the hero
@@ -439,8 +421,8 @@ function mousePressed() {
       mouseY > 600 &&
       mouseY < 600 + 40
     ) {
-      initializeGame(); // Reset game variables
-      gameState = "playing"; // Transition to playing state
+      initializeGame();
+      gameState = "playing";
     }
   }
 }
@@ -463,9 +445,9 @@ function drawMap() {
   for (let y = 0; y < mapGrid.length; y++) {
     for (let x = 0; x < mapGrid[0].length; x++) {
       if (mapGrid[y][x] === 0) {
-        fill(200, 200, 200, 0); // 可行走路径
+        fill(200, 200, 200, 0);
       } else if (mapGrid[y][x] === 1) {
-        fill(0, 0, 200, 180); // 障碍物
+        fill(0, 0, 200, 180);
       }
       rect(x * gridSize, y * gridSize, gridSize, gridSize);
     }
