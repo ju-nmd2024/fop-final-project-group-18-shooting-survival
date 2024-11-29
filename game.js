@@ -160,6 +160,10 @@ class NPC {
     this.speed = random(0.5, 1.5);
     this.moveCooldown = floor(random(60, 180));
     this.timer = 0;
+
+    this.currentRotation = random(TWO_PI); // 当前旋转角度
+    this.targetRotation = random(TWO_PI); // 目标旋转角度
+    this.rotationSpeed = 0.02; // 每帧旋转的速度
   }
 
   get x() {
@@ -173,43 +177,93 @@ class NPC {
   draw() {
     let enlargedSize = this.size * 3.5;
     let offset = 15;
+
+    // 逐渐靠近目标旋转角度
+    if (abs(this.currentRotation - this.targetRotation) > 0.01) {
+      let delta = this.targetRotation - this.currentRotation;
+
+      // 确保最短路径旋转
+      if (delta > PI) delta -= TWO_PI;
+      if (delta < -PI) delta += TWO_PI;
+
+      this.currentRotation += constrain(
+        delta,
+        -this.rotationSpeed,
+        this.rotationSpeed
+      );
+    }
+
+    push();
+    translate(this.x, this.y); // 将原点移动到 NPC 的位置
+    rotate(this.currentRotation); // 应用当前旋转角度
+
+    // 绘制 NPC 图片
     image(
       enemy,
-      this.x - enlargedSize / 2,
-      this.y - enlargedSize / 2 - offset,
+      -enlargedSize / 2,
+      -enlargedSize / 2 - offset,
       enlargedSize,
       enlargedSize
     );
 
-    drawHealthBar(this);
+    pop();
+
+    // 绘制血条（不受旋转影响）
+    this.drawHealthBar();
   }
+
+  drawHealthBar() {
+    let healthBarWidth = 40;
+    let healthBarHeight = 5;
+    let healthRatio = this.health / 3; // 假设最大生命值为 3
+
+    // 背景血条（红色）
+    fill(255, 0, 0);
+    rect(
+      this.x - healthBarWidth / 2,
+      this.y - 50, // 血条在 NPC 图片上方
+      healthBarWidth,
+      healthBarHeight
+    );
+
+    // 当前血量（绿色）
+    fill(0, 255, 0);
+    rect(
+      this.x - healthBarWidth / 2,
+      this.y - 50,
+      healthBarWidth * healthRatio,
+      healthBarHeight
+    );
+  }
+
   randomMove() {
     this.timer++;
     let distanceToHero = dist(this.x, this.y, hero.x, hero.y);
-    
+
     if (distanceToHero < interactionDistance) {
       // Move toward the hero at a slower speed
       let directionToHero = createVector(hero.x - this.x, hero.y - this.y);
       directionToHero.normalize(); // Convert to a unit vector
-  
-      // Adjust speed specifically for pursuing the hero
-      let slowSpeed = 0.5 // Very slow speed
+
+      let slowSpeed = 0.5; // Very slow speed
       this.gridX += (directionToHero.x * slowSpeed) / gridSize;
       this.gridY += (directionToHero.y * slowSpeed) / gridSize;
     } else if (this.timer > this.moveCooldown) {
-      // Continue with random movement logic
       this.direction = p5.Vector.random2D();
-      this.speed = random(0.5, 1.5); // Original random speed
+      this.speed = random(0.5, 1.5);
       this.timer = 0;
       this.moveCooldown = floor(random(60, 180));
+
+      // 更新目标旋转角度
+      this.targetRotation = random(TWO_PI);
     }
-  
+
     let nextX = this.x + this.direction.x * this.speed;
     let nextY = this.y + this.direction.y * this.speed;
-  
+
     let gridX = floor(nextX / gridSize);
     let gridY = floor(nextY / gridSize);
-  
+
     if (
       gridX >= 0 &&
       gridX < mapGrid[0].length &&
@@ -221,8 +275,7 @@ class NPC {
       this.gridY += (this.direction.y * this.speed) / gridSize;
     }
   }
-  
-  
+
   takeDamage() {
     this.health -= 1;
     if (this.health <= 0) {
@@ -230,6 +283,7 @@ class NPC {
     }
   }
 }
+
 class Bullet {
   constructor(x, y, angle, speed, owner) {
     this.x = x;
