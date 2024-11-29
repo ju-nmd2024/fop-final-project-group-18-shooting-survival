@@ -9,6 +9,7 @@ let bullets = [];
 let particles = [];
 
 let gridSize = 100;
+let interactionDistance = 200;
 let gameState = "menu";
 
 function startButton() {
@@ -184,19 +185,31 @@ class NPC {
   }
   randomMove() {
     this.timer++;
-    if (this.timer > this.moveCooldown) {
+    let distanceToHero = dist(this.x, this.y, hero.x, hero.y);
+    
+    if (distanceToHero < interactionDistance) {
+      // Move toward the hero at a slower speed
+      let directionToHero = createVector(hero.x - this.x, hero.y - this.y);
+      directionToHero.normalize(); // Convert to a unit vector
+  
+      // Adjust speed specifically for pursuing the hero
+      let slowSpeed = 0.5 // Very slow speed
+      this.gridX += (directionToHero.x * slowSpeed) / gridSize;
+      this.gridY += (directionToHero.y * slowSpeed) / gridSize;
+    } else if (this.timer > this.moveCooldown) {
+      // Continue with random movement logic
       this.direction = p5.Vector.random2D();
-      this.speed = random(0.5, 1.5);
+      this.speed = random(0.5, 1.5); // Original random speed
       this.timer = 0;
       this.moveCooldown = floor(random(60, 180));
     }
-
+  
     let nextX = this.x + this.direction.x * this.speed;
     let nextY = this.y + this.direction.y * this.speed;
-
+  
     let gridX = floor(nextX / gridSize);
     let gridY = floor(nextY / gridSize);
-
+  
     if (
       gridX >= 0 &&
       gridX < mapGrid[0].length &&
@@ -208,7 +221,8 @@ class NPC {
       this.gridY += (this.direction.y * this.speed) / gridSize;
     }
   }
-
+  
+  
   takeDamage() {
     this.health -= 1;
     if (this.health <= 0) {
