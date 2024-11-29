@@ -154,7 +154,7 @@ class NPC {
   constructor(gridX, gridY, health) {
     this.gridX = gridX;
     this.gridY = gridY;
-    this.size = 40;
+    this.size = 30;
     this.health = health;
     this.direction = p5.Vector.random2D();
     this.speed = random(0.5, 1.5);
@@ -207,6 +207,8 @@ class NPC {
       enlargedSize,
       enlargedSize
     );
+    fill(0);
+    ellipse (-27,-12,1);
 
     pop();
 
@@ -287,20 +289,36 @@ class NPC {
   }
 
   shoot() {
-    // Calculate angle to hero
-    let angle = atan2(hero.y - this.y, hero.x - this.x);
+    // Calculate positions of the two ellipses
+    let enemyShootEllipseX = this.x + cos(this.currentRotation) * -27 - sin(this.currentRotation) * -12;
+    let enemyShootEllipseY = this.y + sin(this.currentRotation) * -27 + cos(this.currentRotation) * -12;
+    let heroShootEllipseX = hero.x + cos(hero.rotation) * 43 - sin(hero.rotation) * 24;
+    let heroShootEllipseY = hero.y + sin(hero.rotation) * 43 + cos(hero.rotation) * 24;
 
-    // Create and fire a bullet toward the hero
-    let bullet = new Bullet(this.x, this.y, angle, 7, "npc");
-    bullets.push(bullet);
-  }
+    // Calculate distance between the two ellipses
+    let distance = dist(enemyShootEllipseX, enemyShootEllipseY, heroShootEllipseX, heroShootEllipseY);
 
-  takeDamage() {
-    this.health -= 1;
-    if (this.health <= 0) {
-      npcs = npcs.filter((npc) => npc !== this);
+    // Check if the distance is within the range of 50 pixels
+    if (distance <= 100) {
+        // Calculate angle to hero
+        let angle = atan2(hero.y - this.y, hero.x - this.x);
+
+        // Create and fire a bullet from the new shoot position
+        let bullet = new Bullet(enemyShootEllipseX, enemyShootEllipseY, angle, 7, "npc");
+        bullets.push(bullet);
     }
+}
+
+takeDamage() {
+  this.health -= 1;
+  if (this.health <= 0) {
+      // Remove the NPC from the array
+      npcs = npcs.filter((npc) => npc !== this);
+
+      // Restore the hero's health to full
+      hero.health = 3; // Assuming 3 is the full health value
   }
+}
 }
 
 
@@ -319,7 +337,11 @@ class Bullet {
   }
 
   draw() {
-    fill(255, 0, 0);
+    if (this.owner === "npc") {
+      fill(255, 165, 0); // Orange color for enemy bullets
+    } else if (this.owner === "hero") {
+      fill(255, 0, 0); // Red color for hero bullets
+    }
     ellipse(this.x, this.y, 20, 10);
   }
 
@@ -340,6 +362,7 @@ class Bullet {
     );
   }
 }
+
 
 class Particle {
   constructor(x, y) {
@@ -478,10 +501,7 @@ function drawWinScreen() {
 
 function drawLostScreen() {
   background(lostBackground);
-  textAlign(CENTER, CENTER);
-  textSize(40);
-  fill(255);
-  text("Game Over", width / 2, height / 2);
+  playAgain();  
 }
 function mousePressed() {
   if (gameState === "menu") {
