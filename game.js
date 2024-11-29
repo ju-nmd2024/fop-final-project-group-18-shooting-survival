@@ -160,6 +160,8 @@ class NPC {
     this.speed = random(0.5, 1.5);
     this.moveCooldown = floor(random(60, 180));
     this.timer = 0;
+    this.shootCooldown = floor(random(120, 180)); // Shooting cooldown
+    this.shootTimer = 0;
 
     this.currentRotation = random(TWO_PI); // 当前旋转角度
     this.targetRotation = random(TWO_PI); // 目标旋转角度
@@ -238,6 +240,8 @@ class NPC {
 
   randomMove() {
     this.timer++;
+    this.shootTimer++;
+
     let distanceToHero = dist(this.x, this.y, hero.x, hero.y);
 
     if (distanceToHero < interactionDistance) {
@@ -274,6 +278,21 @@ class NPC {
       this.gridX += (this.direction.x * this.speed) / gridSize;
       this.gridY += (this.direction.y * this.speed) / gridSize;
     }
+
+    // Handle shooting
+    if (this.shootTimer > this.shootCooldown) {
+      this.shoot();
+      this.shootTimer = 0;
+    }
+  }
+
+  shoot() {
+    // Calculate angle to hero
+    let angle = atan2(hero.y - this.y, hero.x - this.x);
+
+    // Create and fire a bullet toward the hero
+    let bullet = new Bullet(this.x, this.y, angle, 7, "npc");
+    bullets.push(bullet);
   }
 
   takeDamage() {
@@ -283,6 +302,7 @@ class NPC {
     }
   }
 }
+
 
 class Bullet {
   constructor(x, y, angle, speed, owner) {
@@ -448,6 +468,7 @@ function updateBullets() {
     }
   }
 }
+
 
 function drawWinScreen() {
   background(0);
