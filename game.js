@@ -57,7 +57,7 @@ function preload() {
   enemy = loadImage("img/enemy2.png");
   gameStart = loadImage("img/game start.png");
   winBackground = loadImage("img/win game.webp");
-  lostBackground = loadImage("img/gmae lose.webp");
+  lostBackground = loadImage("img/fault.webp");
   backgroundImage = loadImage("img/R.jpg");
 }
 
@@ -208,7 +208,7 @@ class NPC {
       enlargedSize
     );
     fill(0);
-    ellipse (-27,-12,1);
+    ellipse(-27, -12, 1);
 
     pop();
 
@@ -290,37 +290,55 @@ class NPC {
 
   shoot() {
     // Calculate positions of the two ellipses
-    let enemyShootEllipseX = this.x + cos(this.currentRotation) * -27 - sin(this.currentRotation) * -12;
-    let enemyShootEllipseY = this.y + sin(this.currentRotation) * -27 + cos(this.currentRotation) * -12;
-    let heroShootEllipseX = hero.x + cos(hero.rotation) * 43 - sin(hero.rotation) * 24;
-    let heroShootEllipseY = hero.y + sin(hero.rotation) * 43 + cos(hero.rotation) * 24;
+    let enemyShootEllipseX =
+      this.x +
+      cos(this.currentRotation) * -27 -
+      sin(this.currentRotation) * -12;
+    let enemyShootEllipseY =
+      this.y +
+      sin(this.currentRotation) * -27 +
+      cos(this.currentRotation) * -12;
+    let heroShootEllipseX =
+      hero.x + cos(hero.rotation) * 43 - sin(hero.rotation) * 24;
+    let heroShootEllipseY =
+      hero.y + sin(hero.rotation) * 43 + cos(hero.rotation) * 24;
 
     // Calculate distance between the two ellipses
-    let distance = dist(enemyShootEllipseX, enemyShootEllipseY, heroShootEllipseX, heroShootEllipseY);
+    let distance = dist(
+      enemyShootEllipseX,
+      enemyShootEllipseY,
+      heroShootEllipseX,
+      heroShootEllipseY
+    );
 
     // Check if the distance is within the range of 50 pixels
     if (distance <= 100) {
-        // Calculate angle to hero
-        let angle = atan2(hero.y - this.y, hero.x - this.x);
+      // Calculate angle to hero
+      let angle = atan2(hero.y - this.y, hero.x - this.x);
 
-        // Create and fire a bullet from the new shoot position
-        let bullet = new Bullet(enemyShootEllipseX, enemyShootEllipseY, angle, 7, "npc");
-        bullets.push(bullet);
+      // Create and fire a bullet from the new shoot position
+      let bullet = new Bullet(
+        enemyShootEllipseX,
+        enemyShootEllipseY,
+        angle,
+        7,
+        "npc"
+      );
+      bullets.push(bullet);
     }
-}
+  }
 
-takeDamage() {
-  this.health -= 1;
-  if (this.health <= 0) {
+  takeDamage() {
+    this.health -= 1;
+    if (this.health <= 0) {
       // Remove the NPC from the array
       npcs = npcs.filter((npc) => npc !== this);
 
       // Restore the hero's health to full
       hero.health = 3; // Assuming 3 is the full health value
+    }
   }
 }
-}
-
 
 class Bullet {
   constructor(x, y, angle, speed, owner) {
@@ -362,7 +380,6 @@ class Bullet {
     );
   }
 }
-
 
 class Particle {
   constructor(x, y) {
@@ -492,7 +509,6 @@ function updateBullets() {
   }
 }
 
-
 function drawWinScreen() {
   background(0);
   image(winBackground, 0, 0, width, height);
@@ -501,7 +517,7 @@ function drawWinScreen() {
 
 function drawLostScreen() {
   background(lostBackground);
-  playAgain();  
+  playAgain();
 }
 function mousePressed() {
   if (gameState === "menu") {
