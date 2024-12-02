@@ -160,7 +160,7 @@ class NPC {
     this.speed = random(0.5, 1.5);
     this.moveCooldown = floor(random(60, 180));
     this.timer = 0;
-    this.shootCooldown = floor(random(120, 180)); // Shooting cooldown
+    this.shootCooldown = floor(random(30, 50)); // Shooting cooldown
     this.shootTimer = 0;
 
     this.currentRotation = random(TWO_PI); // 当前旋转角度
