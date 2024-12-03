@@ -15,23 +15,11 @@ let gameState = "menu";
 function startButton() {
   strokeWeight(0);
   fill(0, 0, 255);
-  rect(500, 600, 100, 40, 10);
-
+  rect(650, 600, 100, 40, 10);
   fill(255);
-  textSize(16);
+  textSize(18);
   textAlign(CENTER, CENTER);
-  text("Start Game", 550, 620);
-}
-
-function videoButton() {
-  strokeWeight(0);
-  fill(0, 0, 255);
-  rect(800, 600, 100, 40, 10);
-
-  fill(255);
-  textSize(16);
-  textAlign(CENTER, CENTER);
-  text("Play Video", 850, 620);
+  text("Start Game", 700, 620);
 }
 
 function playAgain() {
@@ -160,7 +148,7 @@ class NPC {
     this.speed = random(0.5, 1.5);
     this.moveCooldown = floor(random(60, 180));
     this.timer = 0;
-    this.shootCooldown = floor(random(30, 50)); // Shooting cooldown
+    this.shootCooldown = floor(random(120, 180)); // Shooting cooldown
     this.shootTimer = 0;
 
     this.currentRotation = random(TWO_PI); // 当前旋转角度
@@ -430,7 +418,6 @@ function createNPCs() {
 function drawMenu() {
   background(gameStart);
   startButton();
-  videoButton();
 }
 
 function drawGame() {
@@ -523,8 +510,8 @@ function mousePressed() {
   if (gameState === "menu") {
     // Start game button
     if (
-      mouseX > 500 &&
-      mouseX < 500 + 100 &&
+      mouseX > 650 &&
+      mouseX < 650 + 100 &&
       mouseY > 600 &&
       mouseY < 600 + 40
     ) {
