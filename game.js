@@ -9,7 +9,7 @@ let bullets = [];
 let particles = [];
 
 let gridSize = 100;
-let interactionDistance = 200;
+let interactionDistance = 400;
 let gameState = "menu";
 
 function startButton() {
@@ -423,6 +423,12 @@ function drawMenu() {
 function drawGame() {
   drawBackground();
   drawMap();
+
+  // show NPC
+  fill(255);
+  textSize(24);
+  textAlign(LEFT, TOP);
+  text(`Character left: ${npcs.length}`, 10, 10);
 
   // Player logic
   hero.handleInput();
