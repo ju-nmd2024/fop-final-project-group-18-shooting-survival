@@ -151,9 +151,9 @@ class NPC {
     this.shootCooldown = floor(random(30, 50)); // Shooting cooldown
     this.shootTimer = 0;
 
-    this.currentRotation = random(TWO_PI); // 当前旋转角度
-    this.targetRotation = random(TWO_PI); // 目标旋转角度
-    this.rotationSpeed = 0.02; // 每帧旋转的速度
+    this.currentRotation = random(TWO_PI);
+    this.targetRotation = random(TWO_PI);
+    this.rotationSpeed = 0.02;
   }
 
   get x() {
@@ -168,11 +168,11 @@ class NPC {
     let enlargedSize = this.size * 3.5;
     let offset = 15;
 
-    // 逐渐靠近目标旋转角度
+   
     if (abs(this.currentRotation - this.targetRotation) > 0.01) {
       let delta = this.targetRotation - this.currentRotation;
 
-      // 确保最短路径旋转
+      
       if (delta > PI) delta -= TWO_PI;
       if (delta < -PI) delta += TWO_PI;
 
@@ -184,10 +184,10 @@ class NPC {
     }
 
     push();
-    translate(this.x, this.y); // 将原点移动到 NPC 的位置
-    rotate(this.currentRotation); // 应用当前旋转角度
+    translate(this.x, this.y);
+    rotate(this.currentRotation);
 
-    // 绘制 NPC 图片
+
     image(
       enemy,
       -enlargedSize / 2,
@@ -200,25 +200,25 @@ class NPC {
 
     pop();
 
-    // 绘制血条（不受旋转影响）
+   
     this.drawHealthBar();
   }
 
   drawHealthBar() {
     let healthBarWidth = 40;
     let healthBarHeight = 5;
-    let healthRatio = this.health / 3; // 假设最大生命值为 3
+    let healthRatio = this.health / 3; 
 
-    // 背景血条（红色）
+    
     fill(255, 0, 0);
     rect(
       this.x - healthBarWidth / 2,
-      this.y - 50, // 血条在 NPC 图片上方
+      this.y - 50,
       healthBarWidth,
       healthBarHeight
     );
 
-    // 当前血量（绿色）
+    
     fill(0, 255, 0);
     rect(
       this.x - healthBarWidth / 2,
