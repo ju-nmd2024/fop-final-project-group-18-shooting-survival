@@ -32,6 +32,7 @@ function playAgain() {
   text("Play Again", 700, 620);
 }
 
+//Reference souce:JU Canvas particles.js.zip
 function createParticles(x, y) {
   console.log("Particles created at:", x, y);
   for (let i = 0; i < 100; i++) {
@@ -168,11 +169,9 @@ class NPC {
     let enlargedSize = this.size * 3.5;
     let offset = 15;
 
-   
     if (abs(this.currentRotation - this.targetRotation) > 0.01) {
       let delta = this.targetRotation - this.currentRotation;
 
-      
       if (delta > PI) delta -= TWO_PI;
       if (delta < -PI) delta += TWO_PI;
 
@@ -187,7 +186,6 @@ class NPC {
     translate(this.x, this.y);
     rotate(this.currentRotation);
 
-
     image(
       enemy,
       -enlargedSize / 2,
@@ -200,16 +198,14 @@ class NPC {
 
     pop();
 
-   
     this.drawHealthBar();
   }
 
   drawHealthBar() {
     let healthBarWidth = 40;
     let healthBarHeight = 5;
-    let healthRatio = this.health / 3; 
+    let healthRatio = this.health / 3;
 
-    
     fill(255, 0, 0);
     rect(
       this.x - healthBarWidth / 2,
@@ -218,7 +214,6 @@ class NPC {
       healthBarHeight
     );
 
-    
     fill(0, 255, 0);
     rect(
       this.x - healthBarWidth / 2,
@@ -248,7 +243,6 @@ class NPC {
       this.timer = 0;
       this.moveCooldown = floor(random(60, 180));
 
-      // 更新目标旋转角度
       this.targetRotation = random(TWO_PI);
     }
 
