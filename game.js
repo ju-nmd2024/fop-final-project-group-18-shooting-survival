@@ -75,6 +75,7 @@ function initializeGame() {
   gameState = "menu";
 }
 
+//Reference souce: https://chatgpt.com/share/675030cb-1278-8004-b3c2-d097cad33ae0
 class Hero {
   constructor(x, y, health) {
     this.x = x;
@@ -363,6 +364,7 @@ class Bullet {
   }
 }
 
+//Reference souce:JU Canvas particles.js.zip
 class Particle {
   constructor(x, y) {
     this.x = x;
