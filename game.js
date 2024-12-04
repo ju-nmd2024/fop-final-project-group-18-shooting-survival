@@ -416,6 +416,7 @@ function drawMenu() {
   startButton();
 }
 
+//Reference souce: https://chatgpt.com/share/67503a43-2d08-8009-8744-5f5c8e8cca74
 function drawGame() {
   drawBackground();
   drawMap();
@@ -455,6 +456,7 @@ function drawGame() {
   }
 }
 
+//Reference souce: https://chatgpt.com/share/67503b46-481c-8009-9174-32ef7f2b0a73
 function updateBullets() {
   for (let i = bullets.length - 1; i >= 0; i--) {
     let bullet = bullets[i];
@@ -544,7 +546,7 @@ function mousePressed() {
 function drawBackground() {
   image(backgroundImage, 0, 0, width, height);
 }
-
+//Reference souce:JU Canvas snake.zip
 let mapGrid = [
   [0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0],
   [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0],
