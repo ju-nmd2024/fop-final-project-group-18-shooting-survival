@@ -501,8 +501,7 @@ function updateBullets() {
 }
 
 function drawWinScreen() {
-  background(0);
-  image(winBackground, 0, 0, width, height);
+ image(winBackground, 0, 0, width, height);
   playAgain();
 }
 
