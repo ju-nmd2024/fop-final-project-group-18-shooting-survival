@@ -44,7 +44,7 @@ function createParticles(x, y) {
 function preload() {
   character = loadImage("img/character.png");
   enemy = loadImage("img/enemy2.png");
-  gameStart = loadImage("img/game start.png");
+  gameStart = loadImage("img/game start final.png");
   winBackground = loadImage("img/win game.webp");
   lostBackground = loadImage("img/fault.webp");
   backgroundImage = loadImage("img/R.jpg");
