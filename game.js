@@ -35,7 +35,7 @@ function playAgain() {
 //Reference souce:JU Canvas particles.js.zip
 function createParticles(x, y) {
   console.log("Particles created at:", x, y);
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 500; i++) {
     let particle = new Particle(x, y);
     particles.push(particle);
   }
